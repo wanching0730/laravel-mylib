@@ -6,6 +6,8 @@ use App\Book;
 use Illuminate\Http\Request;
 use App\Http\Resources\BookResource;
 use App\Http\Resources\BookCollection;
+use App\Http\Resources\AuthorResource;
+use App\Http\Resources\AuthorCollection;
 
 class BookController extends Controller
 {
@@ -61,7 +63,7 @@ class BookController extends Controller
             'error' => 404,
             'message' => 'Not found' ], 404);
         }
-        
+
         return new BookResource($book);
     }
 
