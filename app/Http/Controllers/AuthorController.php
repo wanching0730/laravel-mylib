@@ -14,10 +14,22 @@ class AuthorController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        $name = $request->input('name');
+
+        $request->validate([
+            'name' => 'max:150'
+        ]);
+
+        $authors = Author::with('books')
+                    ->when($name, function($query) use ($name) {
+                        return $query->where('name', $name);
+                    })
+                    ->get();
+
         //return AuthorResource::collection(Author::all());
-        $authors = Author::with('books')->paginate(5);
+        // $authors = Author::with('books')->paginate(5);
         return new AuthorCollection($authors);
     }
 

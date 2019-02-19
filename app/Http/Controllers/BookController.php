@@ -16,11 +16,35 @@ class BookController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        // Search function:
+        $isbn = $request->input('isbn');
+        $title = $request->input('title');
+        $year = $request->input('year');
+        $name = $request->input('name');
+
+        // when(): to check whether isbn and title exist or not then run the function
+        $books = Book::with(['authors','publisher'])
+                    ->when($isbn, function($query) use ($isbn) {
+                        return $query->where('isbn', $isbn);
+                    })
+                    ->when($title, function($query) use ($title) {
+                        return $query->where('title', 'like', "%$title%");
+                    })
+                    ->when($year, function($query) use ($year) {
+                        return $query->where('year', $year);
+                    })
+                    ->get();
+
+        // $books = Book::with(['authors' => function ($query) use ($name) {
+        //     $query->where('name', 'like', '%$name%');
+        // }])->get();
+
         // use get() when there is with(), use all() when there is no with()
-        //$books = Book::with('authors')->with('publisher')->get();
-        $books = Book::with('authors')->with('publisher')->paginate(5);
+        // $books = Book::with('authors')->with('publisher')->get();
+        // $books = Book::with('authors')->with('publisher')->paginate(5);
+
         return new BookCollection($books);
     }
 
@@ -42,13 +66,24 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
-        $book = Book::create($request->all());
-        $book->authors()->sync($request->authors);
+        try {
+            $request->validate([
+                'title' => 'max:200',
+                'year' => 'required',
+                'isbn' => ['required', 'unique:books', 'regex:/(-1(?:(0)|3))?:?\x20+(?(1)(?(2)(?:(?=.{13}$)\d{1,5}([ -])\d{1,7}\3\d{1,6}\3(?:\d|x)$)|(?:{17}$)97(?:8|9)([ -])\d{1,5}\4\d{1,7}\4\d{1,6}\4\d$))|(?(.{13}$)(?:\d{1,5}([ -])\d{1,7}\5\d{1,6}\5(?:\d|x)$)|(?:(?=.{17}$)97(?:8|9)([ -])\d{1,5}\6\d{1,7}\6\d{1,6}\6\d$)))/']
+            ]);
 
-        return response()->json([
-        'id' => $book->id,
-        'created_at' => $book->created_at,
-        ], 201);  
+            $book = Book::create($request->all());
+            $book->authors()->sync($request->authors);
+
+            return response()->json([
+                'id' => $book->id,
+                'created_at' => $book->created_at,
+            ], 201);  
+
+        } catch (ValidationException $ex) {
+            return response()->json(['errors' => $ex->errors()], 422);
+        }
     }
 
     /**

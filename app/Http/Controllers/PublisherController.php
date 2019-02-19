@@ -14,9 +14,22 @@ class PublisherController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $publishers = Publisher::with('books')->paginate(5);
+
+        $name = $request->input('name');
+
+        $request->validate([
+            'name' => 'max:100'
+        ]);
+
+        $publishers = Publisher::with('books')
+                    ->when($name, function($query) use ($name) {
+                        return $query->where('name', $name);
+                    })
+                    ->get();
+
+        //$publishers = Publisher::with('books')->paginate(5);
         return new PublisherCollection($publishers);
     }
 
@@ -53,7 +66,8 @@ class PublisherController extends Controller
      */
     public function show($id)
     {
-        $publisher = Publisher::find($id);
+        // Eager loading: load data when needed
+        $publisher = Publisher::with('books')->find($id);
 
         if(!$publisher) {
             return response()->json([
