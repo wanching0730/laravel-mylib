@@ -53,7 +53,7 @@ class AuthorController extends Controller
      */
     public function show($id)
     {
-        $author = Author::find($id);
+        $author = Author::with('books')->find($id);
 
         if(!$author) {
             return response()->json([

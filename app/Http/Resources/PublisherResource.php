@@ -16,7 +16,8 @@ class PublisherResource extends Resource
     {
         return [
             'id' => $this->id, 
-            'name' => mb_strtoupper($this->name)
+            'name' => mb_strtoupper($this->name),
+            'books' => new BookCollection($this->whenLoaded('books'))
         ];
     }
 }

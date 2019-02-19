@@ -18,7 +18,8 @@ class BookController extends Controller
      */
     public function index()
     {
-        return new BookCollection(Book::paginate(5));
+        $books = Book::with('authors')->with('publisher')->all();
+        return new BookCollection($books);
     }
 
     /**
