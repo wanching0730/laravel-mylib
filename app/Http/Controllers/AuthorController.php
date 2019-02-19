@@ -17,7 +17,8 @@ class AuthorController extends Controller
     public function index()
     {
         //return AuthorResource::collection(Author::all());
-        return new AuthorCollection(Author::paginate(5));
+        $authors = Author::with('books')->paginate(5);
+        return new AuthorCollection($authors);
     }
 
     /**

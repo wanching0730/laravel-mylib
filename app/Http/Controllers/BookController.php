@@ -18,7 +18,9 @@ class BookController extends Controller
      */
     public function index()
     {
-        $books = Book::with('authors')->with('publisher')->all();
+        // use get() when there is with(), use all() when there is no with()
+        //$books = Book::with('authors')->with('publisher')->get();
+        $books = Book::with('authors')->with('publisher')->paginate(5);
         return new BookCollection($books);
     }
 
