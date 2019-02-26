@@ -8,6 +8,7 @@ use App\Http\Resources\BookResource;
 use App\Http\Resources\BookCollection;
 use App\Http\Resources\AuthorResource;
 use App\Http\Resources\AuthorCollection;
+use Illuminate\Validation\ValidationException;
 
 class BookController extends Controller
 {
@@ -68,9 +69,9 @@ class BookController extends Controller
     {
         try {
             $request->validate([
+                'isbn' => ['required', 'unique:books', 'regex:/^(97(8|9))?\d{9}(\d|X)$/'],
                 'title' => 'max:200',
-                'year' => 'required',
-                'isbn' => ['required', 'unique:books', 'regex:/(-1(?:(0)|3))?:?\x20+(?(1)(?(2)(?:(?=.{13}$)\d{1,5}([ -])\d{1,7}\3\d{1,6}\3(?:\d|x)$)|(?:{17}$)97(?:8|9)([ -])\d{1,5}\4\d{1,7}\4\d{1,6}\4\d$))|(?(.{13}$)(?:\d{1,5}([ -])\d{1,7}\5\d{1,6}\5(?:\d|x)$)|(?:(?=.{17}$)97(?:8|9)([ -])\d{1,5}\6\d{1,7}\6\d{1,6}\6\d$)))/']
+                'year' => 'required'
             ]);
 
             $book = Book::create($request->all());
