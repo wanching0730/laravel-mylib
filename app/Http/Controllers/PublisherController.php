@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Publisher;
 use Illuminate\Http\Request;
+use App\Http\Requests\SavePublisherRequest;
 use App\Http\Resources\PublisherResource;
 use App\Http\Resources\PublisherCollection;
 
@@ -18,10 +19,6 @@ class PublisherController extends Controller
     {
 
         $name = $request->input('name');
-
-        $request->validate([
-            'name' => 'max:100'
-        ]);
 
         $publishers = Publisher::with('books')
                     ->when($name, function($query) use ($name) {
@@ -49,8 +46,8 @@ class PublisherController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
+    public function store(SavePublisherRequest $request)
+    { 
         $publisher = Publisher::create($request->all());
             return response()->json([
             'id' => $publisher->id,
@@ -95,7 +92,7 @@ class PublisherController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(SavePublisherRequest $request, $id)
     {
         $publisher = Publisher::find($id);
 

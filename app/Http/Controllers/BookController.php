@@ -8,6 +8,7 @@ use App\Http\Resources\BookResource;
 use App\Http\Resources\BookCollection;
 use App\Http\Resources\AuthorResource;
 use App\Http\Resources\AuthorCollection;
+use App\Http\Requests\SaveBookRequest;
 use Illuminate\Validation\ValidationException;
 
 class BookController extends Controller
@@ -65,15 +66,16 @@ class BookController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(SaveBookRequest $request)
     {
         try {
-            $request->validate([
-                'isbn' => ['required', 'unique:books', 'regex:/^(97(8|9))?\d{9}(\d|X)$/'],
-                'title' => 'max:200',
-                'year' => 'required'
-            ]);
+            // $request->validate([
+            //     'isbn' => ['required', 'unique:books', 'regex:/^(97(8|9))?\d{9}(\d|X)$/'],
+            //     'title' => 'max:200',
+            //     'year' => 'required'
+            // ]);
 
+            //$validatedBook = $request->validated();
             $book = Book::create($request->all());
             $book->authors()->sync($request->authors);
 
@@ -84,6 +86,8 @@ class BookController extends Controller
 
         } catch (ValidationException $ex) {
             return response()->json(['errors' => $ex->errors()], 422);
+        } catch (\Exception $ex) {
+            return response()->json(['errors' => $ex->message()], 422);
         }
     }
 
@@ -124,7 +128,7 @@ class BookController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(SaveBookRequest $request, $id)
     {
         $book = Book::find($id);
 

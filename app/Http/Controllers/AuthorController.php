@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Author;
 use Illuminate\Http\Request;
+use App\Http\Requests\SaveAuthorRequest;
 use App\Http\Resources\AuthorResource;
 use App\Http\Resources\AuthorCollection;
 
@@ -17,10 +18,6 @@ class AuthorController extends Controller
     public function index(Request $request)
     {
         $name = $request->input('name');
-
-        $request->validate([
-            'name' => 'max:150'
-        ]);
 
         $authors = Author::with('books')
                     ->when($name, function($query) use ($name) {
@@ -49,8 +46,12 @@ class AuthorController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(SaveAuthorRequest $request)
     {
+        // $request->validate([
+        //     'name' => 'max:150'
+        // ]);
+
         $author = Author::create($request->all());
             return response()->json([
             'id' => $author->id,
@@ -94,7 +95,7 @@ class AuthorController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(SaveAuthorRequest $request, $id)
     {
         $author = Author::find($id);
 
