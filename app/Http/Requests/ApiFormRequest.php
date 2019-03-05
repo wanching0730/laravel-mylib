@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Requests;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Exceptions\HttpResponseException; use Illuminate\Contracts\Validation\Validator;
