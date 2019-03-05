@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Rules\IsIsbn;
 
-class SaveBookRequest extends FormRequest
+class SaveBookRequest extends ApiFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

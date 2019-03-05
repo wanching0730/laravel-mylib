@@ -25,6 +25,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/books', 'WebController@books');
+
 Route::get('/test', function() {
     // Find authors where name is "Hello" of book with ID 7
     // $book = Book::find($id);
@@ -83,3 +85,6 @@ Route::get('/test', function() {
 
     return $books;
 });
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
