@@ -15,6 +15,7 @@ class BookCollection extends ResourceCollection
     public function toArray($request)
     {
         return [
+            // only return attributes stated in BookResource
             'data' => BookResource::collection($this->collection), 
             'meta' => [
                 'time' => date('U'),

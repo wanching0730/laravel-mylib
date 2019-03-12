@@ -19,6 +19,7 @@ class BookResource extends Resource
             'isbn' => $this->isbn, 
             'title' => $this->title, 
             'year' => $this->year,
+            // show authors and publisher only when these two attributes are loaded
             'authors' => new AuthorCollection($this->whenLoaded('authors')),
             'publisher' => new PublisherResource($this->whenLoaded('publisher'))
         ];

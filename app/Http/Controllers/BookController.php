@@ -20,7 +20,7 @@ class BookController extends Controller
      */
     public function index(Request $request)
     {
-        // Search function:
+        // Search function: /api/books?title=Python
         $isbn = $request->input('isbn');
         $title = $request->input('title');
         $year = $request->input('year');
@@ -99,12 +99,13 @@ class BookController extends Controller
      */
     public function show($id)
     {
+        // load both authors and publisher attributes
         $book = Book::with('authors')->with('publisher')->find($id);
 
         if(!$book) {
             return response()->json([
-            'error' => 404,
-            'message' => 'Not found' ], 404);
+                'error' => 404,
+                'message' => 'Not found' ], 404);
         }
 
         return new BookResource($book);
@@ -133,9 +134,9 @@ class BookController extends Controller
         $book = Book::find($id);
 
         if(!$book) {
-        return response()->json([
-            'error' => 404,
-            'message' => 'Not found' ], 404);
+            return response()->json([
+                'error' => 404,
+                'message' => 'Not found' ], 404);
         }
 
         $book->update($request->all());
