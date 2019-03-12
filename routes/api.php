@@ -23,7 +23,10 @@ Route::apiResource('authors', 'AuthorController');
 Route::apiResource('books', 'BookController');
 Route::apiResource('publishers', 'PublisherController');
 
-Route::middleware('api')->namespace('Auth')->prefix('auth')->group(function() { Route::post('login', 'AuthController@login');
+// AuthController inside namespace Auth
+// all api route has prefix 'auth': /api/auth/login
+Route::middleware('api')->namespace('Auth')->prefix('auth')->group(function() { 
+    Route::post('login', 'AuthController@login');
     Route::post('logout', 'AuthController@logout');
     Route::post('refresh', 'AuthController@refresh');
     Route::post('me', 'AuthController@me'); 
