@@ -31,3 +31,9 @@ Route::middleware('api')->namespace('Auth')->prefix('auth')->group(function() {
     Route::post('refresh', 'AuthController@refresh');
     Route::post('me', 'AuthController@me'); 
 });
+
+Route::middleware('jwt.auth')->group(function() {
+    Route::apiResource('authors', 'AuthorController');
+    Route::apiResource('publishers', 'PublisherController');
+    Route::apiResource('books', 'BookController');
+});
