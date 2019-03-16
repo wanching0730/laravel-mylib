@@ -25,6 +25,8 @@ class BookController extends Controller
         $title = $request->input('title');
         $year = $request->input('year');
         $name = $request->input('name');
+        $authorName = $request->input('authorName');
+        $publisherName = $request->input('publisherName');
 
         // when(): to check whether isbn and title exist or not then run the function
         $books = Book::with(['authors','publisher'])
@@ -36,6 +38,12 @@ class BookController extends Controller
                     })
                     ->when($year, function($query) use ($year) {
                         return $query->where('year', $year);
+                    })
+                    ->whereHas('authors', function($query) use ($authorName) {
+                        $query->where('name', 'LIKE', "%$authorName%");
+                    })
+                    ->whereHas('publisher', function($query) use ($publisherName) {
+                        $query->where('name', 'LIKE', "%$publisherName%");
                     })
                     ->get();
 
