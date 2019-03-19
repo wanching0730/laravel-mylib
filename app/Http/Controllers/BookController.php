@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use DB;
 use App\Book;
 use Illuminate\Http\Request;
 use App\Http\Resources\BookResource;
@@ -85,7 +86,12 @@ class BookController extends Controller
 
             //$validatedBook = $request->validated();
             $book = Book::create($request->all());
-            $book->authors()->sync($request->authors);
+            $book->publisher_id = $request->publisher_id;
+
+            DB::transaction(function() use($book, $request) {
+                $book->saveOrFail();
+                $book->authors()->sync($request->authors);
+            });
 
             return response()->json([
                 'id' => $book->id,
@@ -139,18 +145,22 @@ class BookController extends Controller
      */
     public function update(SaveBookRequest $request, $id)
     {
-        $book = Book::find($id);
+        try {
+            $book = Book::find($id);
 
-        if(!$book) {
+            if(!$book) throw new ModelNotFoundException; 
+
+            $book->update($request->all());
+            $book->authors()->sync($request->authors);
+
+            return response()->json(null, 204);
+        } catch (ModelNotFoundException $ex) {
             return response()->json([
-                'error' => 404,
-                'message' => 'Not found' ], 404);
+                'message' => $ex->getMessage()], 404);
+        } catch (\Exception $ex) {
+            return response()->json([
+                'message' => $ex->getMessage()], 500);
         }
-
-        $book->update($request->all());
-        $book->authors()->sync($request->authors);
-
-        return response()->json(null, 204);
     }
 
     /**

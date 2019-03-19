@@ -25,9 +25,11 @@ class SaveBookRequest extends ApiFormRequest
     {
         return [
             // 'isbn' => ['required', 'unique:books', 'regex:/^(97(8|9))?\d{9}(\d|X)$/'],
-            'isbn' => ['required', 'unique:books', new IsIsbn],
+            'isbn' => ['required', 'unique:books', new IsIsbn, 'sometimes'],
             'title' => 'max:200',
-            'year' => 'required'
+            'year' => 'required',
+            // 'authors' => 'required|array',
+            // 'authors' => 'integer'
         ];
     }
 
