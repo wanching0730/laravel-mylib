@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Silber\Bouncer\Database\HasRolesAndAbilities;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Tymon\JWTAuth\Contracts\JWTSubject;

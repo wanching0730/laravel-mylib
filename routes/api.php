@@ -37,3 +37,42 @@ Route::middleware('jwt.auth')->group(function() {
     Route::apiResource('publishers', 'PublisherController');
     Route::apiResource('books', 'BookController');
 });
+
+Route::middleware(['jwt.auth', 'can:manage-users'])->group(function() {
+    // Routes for managing users (not developed in the practical exercise)
+});
+
+Route::middleware(['jwt.auth', 'can:manage-books'])->group(function() {
+
+    Route::apiResource('authors', 'AuthorController')->only([
+        'store',
+        'update',
+    ]);
+    Route::apiResource('publishers', 'PublisherController')->only([
+        'store',
+        'update',
+    ]);
+    Route::apiResource('books', 'BookController')->only([
+        'store',
+        'update',
+    ]);
+
+});
+
+
+Route::middleware(['jwt.auth', 'can:view-books'])->group(function() {
+
+    Route::apiResource('authors', 'AuthorController')->only([
+        'index',
+        'show',
+    ]);
+    Route::apiResource('publishers', 'PublisherController')->only([
+        'index',
+        'show',
+    ]);
+    Route::apiResource('books', 'BookController')->only([
+        'index',
+        'show',
+    ]);
+
+});

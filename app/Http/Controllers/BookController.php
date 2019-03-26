@@ -113,16 +113,17 @@ class BookController extends Controller
      */
     public function show($id)
     {
-        // load both authors and publisher attributes
-        $book = Book::with('authors')->with('publisher')->find($id);
+        try {
+            // load both authors and publisher attributes
+            $book = Book::with('authors')->with('publisher')->find($id);
+            if(!$book) throw new ModelNotFoundException;
 
-        if(!$book) {
+            return new BookResource($book);
+        } catch(ModelNotFoundException $ex) {
             return response()->json([
-                'error' => 404,
-                'message' => 'Not found' ], 404);
+                'message' => $ex->getMessage(),
+            ], 404);
         }
-
-        return new BookResource($book);
     }
 
     /**
